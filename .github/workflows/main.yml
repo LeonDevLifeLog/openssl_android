@@ -1,45 +1,40 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
-
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
-on:
+'on':
   push:
-    branches: [ master ]
+    branches:
+      - master
   pull_request:
-    branches: [ master ]
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+    branches:
+      - master
 jobs:
-  # This workflow contains a single job called "build"
   build:
     strategy:
       matrix:
-        arch: [arm,arm64,x86,x86_64]
-    # The type of runner that the job will run on
+        arch:
+          - arm
+          - arm64
+          - x86
+          - x86_64
     runs-on: ubuntu-latest
     container:
-      image: docker://fabernovel/android:api-29-ndk-v1.1.1
-    # Steps represent a sequence of tasks that will be executed as part of the job
+      image: 'docker://fabernovel/android:api-29-ndk-v1.1.1'
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
-    - name: run shell
-      env:
-        ARCH: ${{ matrix.arch }}
-        ANDROID_NDK_HOME: /opt/android/sdk/ndk/21.0.6113669
-      run: bash build-android.sh
-    - uses: montudor/action-zip@v0.1.0
-      with:
-        args: zip ${{ matrix.arch }}.zip ./openssl/*.a ./openssl/*.so
-    - name: Upload a Build Artifact
-    - uses: actions/upload-artifact@v2
-    - with:
-        # A file, directory or wildcard pattern that describes what to upload
-        path: ${{ github.workspace }}/openssl/${{ matrix.arch }}.zip
+      - uses: actions/checkout@v2
+      - name: run shell
+        env:
+          ARCH: '${{ matrix.arch }}'
+          ANDROID_NDK_HOME: /opt/android/sdk/ndk/21.0.6113669
+        run: bash build-android.sh
+      - uses: montudor/action-zip@v0.1.0
+        with:
+          args: 'zip ${{ matrix.arch }}.zip ./openssl/*.a ./openssl/*.so'
+      - name: Upload a Build Artifact
+      - uses: actions/upload-artifact@v2
+      - with:
+          path: '${{ github.workspace }}/openssl/${{ matrix.arch }}.zip'
   upload:
-    needs: [build]
+    needs:
+      - build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v2
@@ -47,8 +42,10 @@ jobs:
         run: ls -R
       - uses: montudor/action-zip@v0.1.0
       - with:
-          args: unzip arm.zip -d armeabi-v7a && unzip arm64.zip -d arm64-v8a && unzip x86.zip -d x86 && unzip x86_64.zip -d x86_64 && ls && rm *.zip &&zip -r artifact.zip . 
+          args: >-
+            unzip arm.zip -d armeabi-v7a && unzip arm64.zip -d arm64-v8a &&
+            unzip x86.zip -d x86 && unzip x86_64.zip -d x86_64 && ls && rm *.zip
+            &&zip -r artifact.zip .
       - uses: actions/upload-artifact@v2
       - with:
-        # A file, directory or wildcard pattern that describes what to upload
-          path: ${{ github.workspace }}/artifact.zip
+          path: '${{ github.workspace }}/artifact.zip'
