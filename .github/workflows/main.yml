@@ -28,4 +28,5 @@ jobs:
     - name: run shell
       env:
         ARCH: ${{ matrix.arch }}
+        ANDROID_NDK_HOME: /opt/android/sdk/ndk-bundle
       run: bash build-android.sh
