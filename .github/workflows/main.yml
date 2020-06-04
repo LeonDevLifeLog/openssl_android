@@ -29,8 +29,8 @@ jobs:
         with:
           args: 'zip ${{ matrix.arch }}.zip ./openssl/*.a ./openssl/*.so'
       - name: Upload a Build Artifact
-      - uses: actions/upload-artifact@v2
-      - with:
+        uses: actions/upload-artifact@v2
+        with:
           path: '${{ github.workspace }}/openssl/${{ matrix.arch }}.zip'
   upload:
     needs:
