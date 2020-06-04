@@ -41,11 +41,11 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R
       - uses: montudor/action-zip@v0.1.0
-      - with:
+        with:
           args: >-
             unzip arm.zip -d armeabi-v7a && unzip arm64.zip -d arm64-v8a &&
             unzip x86.zip -d x86 && unzip x86_64.zip -d x86_64 && ls && rm *.zip
             &&zip -r artifact.zip .
       - uses: actions/upload-artifact@v2
-      - with:
+        with:
           path: '${{ github.workspace }}/artifact.zip'
